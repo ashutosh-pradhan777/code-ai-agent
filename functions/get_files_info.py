@@ -1,15 +1,17 @@
 import os
+from google.genai import types
 
 #  This is kind of a guard rail
-def get_files_info(working_directory, directory=None):
+def get_files_info(working_directory, directory="."):
     abs_working_dir = os.path.abspath(working_directory)
+    abs_directory = ""
     if directory is None:
-        directory = working_directory
         abs_directory = os.path.abspath(working_directory)
-    abs_directory = os.path.abspath(os.path.join(working_directory,directory))
+    else:
+        abs_directory = os.path.abspath(os.path.join(working_directory,directory))
 
     if not abs_directory.startswith(abs_working_dir):
-        return f'Error: "{directory}" is not a directory' # No exception: because llm is using this error
+        return f'Error: "{directory}" is not in working directory' # No exception: because llm is using this error
     
     final_response = ""
     contents = os.listdir(abs_directory)
@@ -20,3 +22,18 @@ def get_files_info(working_directory, directory=None):
         final_response += f"- {content}: file_size={size} bytes, is_dir={is_dir}\n"
 
     return final_response
+
+
+schema_get_files_info = types.FunctionDeclaration(
+    name="get_files_info",
+    description="Lists files in the specified directory along with their sizes, constrained to the working directory.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "directory": types.Schema(
+                type=types.Type.STRING,
+                description="The directory to list files from, relative to the working directory. If not provided, lists files in the working directory itself.",
+            ),
+        },
+    ),
+)
