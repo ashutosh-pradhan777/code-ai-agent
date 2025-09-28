@@ -3,16 +3,16 @@
 class Calculator:
     def __init__(self):
         self.operators = {
-            "+": lambda a, b: a + b,
-            "-": lambda a, b: a - b,
-            "*": lambda a, b: a * b,
-            "/": lambda a, b: a / b,
+            "+" : lambda a, b: a + b,
+            "-" : lambda a, b: a - b,
+            "*" : lambda a, b: a * b,
+            "/" : lambda a, b: a / b,
         }
         self.precedence = {
-            "+": 1,
-            "-": 1,
-            "*": 2,
-            "/": 2,
+            "+" : 1,
+            "-" : 1,
+            "*" : 2,
+            "/" : 2,
         }
 
     def evaluate(self, expression):
@@ -56,6 +56,6 @@ class Calculator:
         if len(values) < 2:
             raise ValueError(f"not enough operands for operator {operator}")
 
-        b = values.pop()
         a = values.pop()
-        values.append(self.operators[operator](a, b))
+        b = values.pop()
+        values.append(self.operators[operator](b, a))
